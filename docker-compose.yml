@@ -1,0 +1,71 @@
+services:
+
+  # ──────────────────────────────────────────────
+  # PostgreSQL Database
+  # ──────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: mediguide-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       mediguide_db
+      POSTGRES_USER:     mediguide_user
+      POSTGRES_PASSWORD: mediguide_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mediguide_user -d mediguide_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mediguide-network
+
+  # ──────────────────────────────────────────────
+  # Spring Boot Backend
+  # ──────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mediguide-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL:      jdbc:postgresql://postgres:5432/mediguide_db
+      SPRING_DATASOURCE_USERNAME: mediguide_user
+      SPRING_DATASOURCE_PASSWORD: mediguide_pass
+      APP_JWT_SECRET:             mediguide-super-secret-key-256-bits-long-for-jwt-authentication-2024
+      APP_JWT_EXPIRATION:         86400000
+      APP_CORS_ALLOWED_ORIGINS:   http://localhost:3000,http://frontend:80
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mediguide-network
+
+  # ──────────────────────────────────────────────
+  # React Frontend
+  # ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mediguide-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mediguide-network
+
+volumes:
+  postgres_data:
+
+networks:
+  mediguide-network:
+    driver: bridge
