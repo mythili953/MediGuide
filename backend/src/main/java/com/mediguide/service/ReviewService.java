@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -59,6 +60,7 @@ public class ReviewService {
         return toDTO(saved);
     }
 
+    @Transactional
     public void delete(Long reviewId, String userEmail) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Review", reviewId));

@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
@@ -53,10 +56,12 @@ public class HospitalService {
         return hospitalRepository.findAllCities();
     }
 
+    @Transactional
     public Hospital save(Hospital hospital) {
         return hospitalRepository.save(hospital);
     }
 
+    @Transactional
     public Hospital update(Long id, Hospital hospital) {
         if (!hospitalRepository.existsById(id)) {
             throw new ResourceNotFoundException("Hospital", id);
@@ -65,6 +70,7 @@ public class HospitalService {
         return hospitalRepository.save(hospital);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!hospitalRepository.existsById(id)) {
             throw new ResourceNotFoundException("Hospital", id);
@@ -72,6 +78,7 @@ public class HospitalService {
         hospitalRepository.deleteById(id);
     }
 
+    @Transactional
     public HospitalDTO createHospital(HospitalDTO dto) {
         Hospital h = Hospital.builder()
                 .name(dto.getName())
