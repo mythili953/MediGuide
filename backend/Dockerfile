@@ -19,5 +19,5 @@ USER mediguide
 EXPOSE 8080
 
 ENTRYPOINT ["java", \
-  "-Xms256m", "-Xmx512m", \
+  "-Xms128m", "-Xmx320m", \
   "-jar", "app.jar"]
