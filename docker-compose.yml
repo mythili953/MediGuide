@@ -33,13 +33,12 @@ services:
     container_name: mediguide-backend
     restart: unless-stopped
     environment:
-      # 👇 UPDATE THESE LINES WITH YOUR NEON DETAILS
-      SPRING_DATASOURCE_URL:      jdbc:postgresql://ep-holy-wave-aib9gbks.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
-      SPRING_DATASOURCE_USERNAME: neondb_owner
-      SPRING_DATASOURCE_PASSWORD: npg_BS3wVJ8QYdaK
-      APP_JWT_SECRET:             mediguide-super-secret-key-256-bits-long-for-jwt-authentication-2024
-      APP_JWT_EXPIRATION:         86400000
-      APP_CORS_ALLOWED_ORIGINS:   http://localhost:3000,http://frontend:80
+      SPRING_DATASOURCE_URL:      ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      APP_JWT_SECRET:             ${JWT_SECRET}
+      APP_JWT_EXPIRATION:         ${JWT_EXPIRATION}
+      APP_CORS_ALLOWED_ORIGINS:   ${CORS_ALLOWED_ORIGINS}
     ports:
       - "8080:8080"
     networks:

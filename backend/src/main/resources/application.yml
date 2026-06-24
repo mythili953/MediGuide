@@ -3,14 +3,14 @@ spring:
     name: mediguide-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/mediguide_db
-    username: mediguide_user
-    password: mediguide_pass
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/mediguide_db}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:mediguide_user}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:mediguide_pass}}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
@@ -30,8 +30,8 @@ server:
 
 app:
   jwt:
-    secret: mediguide-super-secret-key-256-bits-long-for-jwt-authentication-2024
-    expiration: 86400000       # 24 hours in ms
+    secret: ${APP_JWT_SECRET:${JWT_SECRET:mediguide-super-secret-key-256-bits-long-for-jwt-authentication-2024}}
+    expiration: ${APP_JWT_EXPIRATION:${JWT_EXPIRATION:86400000}}       # 24 hours in ms
     refresh-expiration: 604800000  # 7 days in ms
 
   cors:
